@@ -23,7 +23,7 @@ export default function IndexPage({ actionData }: Route.ComponentProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors: clientError },
   } = useForm<RegisterFormSchema>({
     resolver: zodResolver(registerFormSchema),
   });
@@ -46,20 +46,26 @@ export default function IndexPage({ actionData }: Route.ComponentProps) {
               type="text"
               {...register('username')}
               required
-              aria-describedby={error?.fieldErrors.username ? 'feedback-username' : undefined}
+              aria-describedby={
+                clientError.username?.message || error?.fieldErrors.username ? 'feedback-username' : undefined
+              }
             />
           </label>
           {error?.fieldErrors.username && <p id="feedback-username">{error?.fieldErrors.username}</p>}
+          {clientError.username?.message && <p id="feedback-username">{clientError.username?.message}</p>}
           <label>
             Password
             <input
               type="password"
               {...register('password')}
               required
-              aria-describedby={error?.fieldErrors.password ? 'feedback-password' : undefined}
+              aria-describedby={
+                clientError.password?.message || error?.fieldErrors.password ? 'feedback-password' : undefined
+              }
             />
           </label>
           {error?.fieldErrors.password && <p id="feedback-password">{error?.fieldErrors.password}</p>}
+          {clientError.password?.message && <p id="feedback-password">{clientError.password?.message}</p>}
         </fieldset>
         <button type="submit">Register</button>
       </Form>

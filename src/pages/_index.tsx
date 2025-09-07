@@ -1,6 +1,8 @@
-import { Form, href, redirect } from 'react-router';
+import { Form, href, redirect, useSubmit } from 'react-router';
 import type { Route } from './+types/_index';
 import * as z from 'zod/v4';
+import { useForm, type SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 const registerFormSchema = z.object({
   username: z
@@ -17,20 +19,32 @@ type RegisterFormSchema = z.infer<typeof registerFormSchema>;
 
 export default function IndexPage({ actionData }: Route.ComponentProps) {
   const { success, error } = actionData || {};
+  const submit = useSubmit();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormSchema>({
+    resolver: zodResolver(registerFormSchema),
+  });
+
+  const _handleRegisterForm: SubmitHandler<RegisterFormSchema> = (formValues) => {
+    submit(formValues, { method: 'POST' });
+  };
 
   return (
     <div className="container">
       <h1>React Router v7 - Form Validation</h1>
       <p>client-side and server-side form validation with Zod and React Hooks Form</p>
       <h2>Register Form</h2>
-      <Form method="POST">
+      <Form method="POST" onSubmit={handleSubmit(_handleRegisterForm)}>
         <fieldset>
           <legend>Account Details</legend>
           <label>
             Username
             <input
               type="text"
-              name="username"
+              {...register('username')}
               required
               aria-describedby={error?.fieldErrors.username ? 'feedback-username' : undefined}
             />
@@ -40,7 +54,7 @@ export default function IndexPage({ actionData }: Route.ComponentProps) {
             Password
             <input
               type="password"
-              name="password"
+              {...register('password')}
               required
               aria-describedby={error?.fieldErrors.password ? 'feedback-password' : undefined}
             />

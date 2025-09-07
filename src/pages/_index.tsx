@@ -1,4 +1,4 @@
-import { Form } from 'react-router';
+import { Form, href, redirect } from 'react-router';
 import type { Route } from './+types/_index';
 import * as z from 'zod/v4';
 
@@ -37,4 +37,19 @@ export default function IndexPage({}: Route.ComponentProps) {
       </Form>
     </div>
   );
+}
+
+export async function action({ request }: Route.ActionArgs) {
+  const formData = await request.formData();
+  const formValues = Object.fromEntries(formData);
+  const validatedForm = registerFormSchema.safeParse(formValues);
+
+  if (!validatedForm.success) {
+    return {
+      success: false,
+      error: z.flattenError(validatedForm.error),
+    };
+  }
+
+  return redirect(href('/dashboard'));
 }

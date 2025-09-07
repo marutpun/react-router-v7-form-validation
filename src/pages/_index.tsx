@@ -15,7 +15,9 @@ const registerFormSchema = z.object({
 
 type RegisterFormSchema = z.infer<typeof registerFormSchema>;
 
-export default function IndexPage({}: Route.ComponentProps) {
+export default function IndexPage({ actionData }: Route.ComponentProps) {
+  const { success, error } = actionData || {};
+
   return (
     <div className="container">
       <h1>React Router v7 - Form Validation</h1>
@@ -26,12 +28,24 @@ export default function IndexPage({}: Route.ComponentProps) {
           <legend>Account Details</legend>
           <label>
             Username
-            <input type="text" name="username" required />
+            <input
+              type="text"
+              name="username"
+              required
+              aria-describedby={error?.fieldErrors.username ? 'feedback-username' : undefined}
+            />
           </label>
+          {error?.fieldErrors.username && <p id="feedback-username">{error?.fieldErrors.username}</p>}
           <label>
             Password
-            <input type="password" name="password" required />
+            <input
+              type="password"
+              name="password"
+              required
+              aria-describedby={error?.fieldErrors.password ? 'feedback-password' : undefined}
+            />
           </label>
+          {error?.fieldErrors.password && <p id="feedback-password">{error?.fieldErrors.password}</p>}
         </fieldset>
         <button type="submit">Register</button>
       </Form>

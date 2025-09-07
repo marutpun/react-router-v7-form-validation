@@ -51,8 +51,9 @@ export default function IndexPage({ actionData }: Route.ComponentProps) {
               }
             />
           </label>
-          {error?.fieldErrors.username && <p id="feedback-username">{error?.fieldErrors.username}</p>}
-          {clientError.username?.message && <p id="feedback-username">{clientError.username?.message}</p>}
+          {(error?.fieldErrors.username || clientError.username?.message) && (
+            <p id="feedback-username">{error?.fieldErrors.username || clientError.username?.message}</p>
+          )}
           <label>
             Password
             <input
@@ -64,8 +65,9 @@ export default function IndexPage({ actionData }: Route.ComponentProps) {
               }
             />
           </label>
-          {error?.fieldErrors.password && <p id="feedback-password">{error?.fieldErrors.password}</p>}
-          {clientError.password?.message && <p id="feedback-password">{clientError.password?.message}</p>}
+          {(error?.fieldErrors.password || clientError.password?.message) && (
+            <p id="feedback-password">{error?.fieldErrors.password || clientError.password?.message}</p>
+          )}
         </fieldset>
         <button type="submit">Register</button>
       </Form>
